@@ -1223,6 +1223,10 @@ config BLUETOOTH_DT_DEVICE_FIXUP
 	  The used address is "bdaddr" if set, and "ethaddr" with the LSB
 	  flipped elsewise.
 
+config TARGET_TURINGPI2
+	bool "Turing Pi 2"
+	depends on MACH_SUN8I_R528
+
 config CHIP_DIP_SCAN
 	bool "Enable DIPs detection for CHIP board"
 	select SUPPORT_EXTENSION_SCAN

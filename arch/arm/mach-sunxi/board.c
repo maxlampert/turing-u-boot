@@ -476,6 +476,10 @@ void board_init_f(ulong dummy)
 	/* Enable non-secure access to some peripherals */
 	tzpc_init();
 
+#if defined(CONFIG_BOARD_EARLY_INIT_F)
+	board_early_init_f();
+#endif
+
 	timer_init();
 	clock_init();
 	gpio_init();
