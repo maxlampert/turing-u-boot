@@ -9,14 +9,17 @@
 #include <asm/gpio.h>
 #include <asm/io.h>
 #include <bloblist.h>
-#include <board_info.h>
-#include <common.h>
 #include <dm.h>
 #include <i2c_eeprom.h>
 #include <init.h>
 #include <linux/delay.h>
+#include <linux/errno.h>
+#include <linux/string.h>
+#include <log.h>
 #include <sunxi_gpio.h>
 #include <u-boot/crc.h>
+
+#include "board_info.h"
 
 #define TURING_PI2_LATCH_STATE_ADDR 0x0709010c
 #define TURING_PI2_BOOT_COOKIE_ADDR 0x07090108
