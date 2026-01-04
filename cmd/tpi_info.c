@@ -11,6 +11,7 @@
 #include <env.h>
 #include <linux/string.h>
 #include <log.h>
+#include <vsprintf.h>
 
 #include <board_info.h>
 
