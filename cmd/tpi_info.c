@@ -4,6 +4,8 @@
  *
  */
 
+#include <stdio.h>
+
 #include <bloblist.h>
 #include <command.h>
 #include <env.h>
