@@ -29,6 +29,8 @@
 
 #include <linux/compiler.h>
 
+int tp_board_init(void);
+
 struct fel_stash {
   uint32_t sp;
   uint32_t lr;
@@ -211,6 +213,15 @@ static int spl_board_load_image(struct spl_image_info *spl_image,
   return 0;
 }
 SPL_LOAD_IMAGE_METHOD("FEL", 0, BOOT_DEVICE_BOARD, spl_board_load_image);
+
+static void go_to_fel(void) {
+  /* change lr to the well-known fel entry point */
+  fel_stash.lr &= ~0xFFFF;
+  fel_stash.lr |= 0x002
+  debug("Entering FEL sp=%x, lr=%x\n", fel_stash.sp, fel_stash.lr);
+  return_to_fel(fel_stash.sp, fel_stash.lr);
+}
+
 #endif /* CONFIG_XPL_BUILD */
 
 #define SUNXI_INVALID_BOOT_SOURCE -1
@@ -444,6 +455,28 @@ u32 spl_mmc_boot_mode(struct mmc *mmc, const u32 boot_device) {
   return result;
 }
 
+// In the event the bus hanged because of prior operation, clock out any
+// residual operations.
+void unblock_twi2_bus() {
+    unsigned SCL = SUNXI_GPE(12);
+    unsigned SDA = SUNXI_GPE(13);
+    gpio_direction_output(SCL, 0);
+    gpio_direction_output(SDA, 0);
+
+    for(int i=0; i < 9; ++i) {
+        gpio_set_value(SCL, 0);
+        udelay(5);
+        gpio_set_value(SCL, 1);
+        udelay(5);
+    }
+    gpio_set_value(SCL, 0);
+    udelay(5);
+    udelay(5);
+    gpio_set_value(SCL, 1);
+    udelay(5);
+    gpio_set_value(SDA, 1);
+}
+
 void board_init_f(ulong dummy) {
   sunxi_sram_init();
 
@@ -462,11 +495,15 @@ void board_init_f(ulong dummy) {
   preloader_console_init();
 
 #if CONFIG_IS_ENABLED(I2C) && CONFIG_IS_ENABLED(SYS_I2C_LEGACY)
+  unblock_twi2_bus();
   /* Needed early by sunxi_board_init if PMU is enabled */
   i2c_init_board();
   i2c_init(CONFIG_SYS_I2C_SPEED, CONFIG_SYS_I2C_SLAVE);
 #endif
   sunxi_board_init();
+  if (tp_board_init() == 1) {
+      go_to_fel();
+  }
 }
 #endif /* CONFIG_XPL_BUILD */
 

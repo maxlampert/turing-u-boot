@@ -27,6 +27,7 @@
 #define TURING_PI2_BOOT_COOKIE_FEL 0x5aa5a55a
 #define LOG_DEBUG
 #define DEBUG
+
 /*
  * RTL8370MB switch reset (active-low) on PG13 should be asserted very
  * early in boot to prevent Ethernet from coming up until the switch
@@ -62,16 +63,9 @@ static void init_latches(u16 tpi_version) {
 }
 
 static int board_info_from_eeprom(tpi_board_info *info) {
-  struct udevice *dev;
-  int res;
-
-  res = uclass_first_device_err(UCLASS_I2C_EEPROM, &dev);
-  if (res) {
-    printf("Error: finding EEPROM device %d\n", res);
-    return res;
-  }
-
-  res = i2c_eeprom_read(dev, 0, (uint8_t *)info, sizeof(tpi_board_info));
+  uint chip = 0x50;
+  uint addr = 0;
+  int res = i2c_read(chip, addr, 1, (uint8_t *)info, sizeof(tpi_board_info));
   if (res) {
     printf("Error: reading EEPROM %d\n", res);
     return res;
