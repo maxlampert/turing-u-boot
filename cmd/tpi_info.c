@@ -4,13 +4,14 @@
  *
  */
 
-#include <stdio.h>
-
 #include <bloblist.h>
-#include <board_info.h>
 #include <command.h>
-#include <common.h>
 #include <env.h>
+#include <stdio.h>
+#include <string.h>
+#include <vsprintf.h>
+
+#include "../board/turing/pi2/board_info.h"
 
 // Returns the semver version pointed to by `version_ptr` as a char*, prefixed
 // with 'v'. e.g. v2.5.1
