@@ -62,13 +62,6 @@ static void init_latches(u16 tpi_version) {
 static int board_info_from_eeprom(tpi_board_info *info) {
   int ret;
 
-  /* Select I2C bus 2 (TWI2) */
-  ret = i2c_set_bus_num(2);
-  if (ret) {
-    printf("Error: cannot select I2C bus 2: %d\n", ret);
-    return ret;
-  }
-
   /* Read from EEPROM at address 0x50, offset 0, 1-byte address */
   ret = i2c_read(0x50, 0, 1, (uint8_t *)info, sizeof(tpi_board_info));
   if (ret) {
