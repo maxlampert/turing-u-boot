@@ -28,6 +28,7 @@
 #include <asm/arch/mmc.h>
 
 #include <linux/compiler.h>
+#include <linux/delay.h>
 
 int tp_board_init(void);
 
@@ -483,7 +484,7 @@ u32 spl_mmc_boot_mode(struct mmc *mmc, const u32 boot_device)
 
 // In the event the bus hanged because of prior operation, clock out any
 // residual operations.
-void unblock_twi2_bus() {
+void unblock_twi2_bus(void) {
     unsigned SCL = SUNXI_GPE(12);
     unsigned SDA = SUNXI_GPE(13);
     gpio_direction_output(SCL, 0);
