@@ -206,10 +206,12 @@ int eth_env_get_enetaddr(const char *name, uint8_t *enetaddr)
 int eth_env_set_enetaddr(const char *name, const uint8_t *enetaddr)
 {
 	char buf[ARP_HLEN_ASCII + 1];
+	const char * const argv[4] = { "setenv", name, buf, NULL };
 
 	sprintf(buf, "%pM", enetaddr);
 
-	return env_set_force(name, buf);
+	/* Use H_FORCE to overwrite existing value */
+	return env_do_env_set(0, 3, (char * const *)argv, H_PROGRAMMATIC | H_FORCE);
 }
 
 /*
