@@ -9,6 +9,7 @@
 #include <asm/gpio.h>
 #include <asm/io.h>
 #include <bloblist.h>
+#include <dm.h>
 #include <i2c.h>
 #include <init.h>
 #include <linux/delay.h>
@@ -60,12 +61,20 @@ static void init_latches(u16 tpi_version) {
 }
 
 static int board_info_from_eeprom(tpi_board_info *info) {
-  uint chip = 0x50;
-  uint addr = 0;
-  int res = i2c_read(chip, addr, 1, (uint8_t *)info, sizeof(tpi_board_info));
-  if (res) {
-    printf("Error: reading EEPROM %d\n", res);
-    return res;
+  struct udevice *dev;
+  int ret;
+
+  /* Get I2C chip at address 0x50 on bus 2 (TWI2), 1-byte offset */
+  ret = i2c_get_chip_for_busnum(2, 0x50, 1, &dev);
+  if (ret) {
+    printf("Error: cannot find EEPROM: %d\n", ret);
+    return ret;
+  }
+
+  ret = dm_i2c_read(dev, 0, (uint8_t *)info, sizeof(tpi_board_info));
+  if (ret) {
+    printf("Error: reading EEPROM: %d\n", ret);
+    return ret;
   }
 
   return 0;
