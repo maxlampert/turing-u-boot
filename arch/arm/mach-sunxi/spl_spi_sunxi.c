@@ -498,22 +498,17 @@ static int spl_spi_load_image(struct spl_image_info *spl_image,
 
 	load_offset = max_t(uint32_t, load_offset, CONFIG_SYS_SPI_U_BOOT_OFFS);
 
-	load.dev = NULL;
-	load.priv = NULL;
-	load.filename = NULL;
-	load.bl_len = 1;
-
 	spi0_init();
 
 #if defined(CONFIG_SPL_SPI_SUNXI_NAND)
 	spi0_nand_reset();
-	load.read = spi_load_read_nand;
+	spl_load_init(&load, spi_load_read_nand, NULL, 1);
 	ret = spl_spi_try_load(spl_image, bootdev, &load, load_offset, false);
 	if (!ret)
 		goto out;
 #endif
 
-	load.read = spi_load_read_nor;
+	spl_load_init(&load, spi_load_read_nor, NULL, 1);
 	ret = spl_spi_try_load(spl_image, bootdev, &load, load_offset, true);
 
 out:
