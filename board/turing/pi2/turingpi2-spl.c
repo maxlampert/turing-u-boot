@@ -6,15 +6,16 @@
  * Early init for the Turing Pi 2 clusterboard.
  */
 
+#include <stdio.h>
+#include <init.h>
+#include <log.h>
+#include <i2c.h>
+#include <bloblist.h>
+#include <sunxi_gpio.h>
 #include <asm/gpio.h>
 #include <asm/io.h>
-#include <bloblist.h>
-#include <i2c.h>
-#include <init.h>
 #include <linux/delay.h>
 #include <linux/errno.h>
-#include <stdio.h>
-#include <sunxi_gpio.h>
 #include <u-boot/crc.h>
 
 #include "board_info.h"
