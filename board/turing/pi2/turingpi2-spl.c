@@ -26,6 +26,12 @@
 #define TURING_PI2_BOOT_COOKIE_FEL 0x5aa5a55a
 #define LOG_DEBUG
 #define DEBUG
+
+/*
+ * Extern declaration for legacy i2c_read to avoid GCC 14 implicit declaration error.
+ * The actual implementation is provided by the legacy I2C subsystem.
+ */
+extern int i2c_read(u8 chip, uint addr, int alen, u8 *buffer, int len);
 /*
  * RTL8370MB switch reset (active-low) on PG13 should be asserted very
  * early in boot to prevent Ethernet from coming up until the switch
