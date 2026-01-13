@@ -14,6 +14,8 @@
 #include <i2c.h>
 #include <init.h>
 #include <sunxi_gpio.h>
+#include <linux/delay.h>
+#include <u-boot/crc.h>
 
 #define TURING_PI2_LATCH_STATE_ADDR 0x0709010c
 #define TURING_PI2_BOOT_COOKIE_ADDR 0x07090108
@@ -21,6 +23,13 @@
 #define TURING_PI2_BOOT_COOKIE_FEL 0x5aa5a55a
 #define LOG_DEBUG
 #define DEBUG
+
+/*
+ * Extern declaration for legacy i2c_read to avoid GCC 14 implicit declaration error.
+ * The actual implementation is provided by the legacy I2C subsystem.
+ */
+extern int i2c_read(uint8_t chip, unsigned int addr, int alen, uint8_t *buffer, int len);
+
 /*
  * RTL8370MB switch reset (active-low) on PG13 should be asserted very
  * early in boot to prevent Ethernet from coming up until the switch
