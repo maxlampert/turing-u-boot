@@ -153,6 +153,18 @@ bool env_get_autostart(void);
 int env_set(const char *varname, const char *value);
 
 /**
+ * env_set_force() - set an environment variable, overriding write-once flags
+ *
+ * This sets or deletes the value of an environment variable, ignoring any
+ * write-once or read-only flags on the variable.
+ *
+ * @varname: Variable to adjust
+ * @value: Value to set for the variable, or NULL or "" to delete the variable
+ * Return: 0 if OK, 1 on error
+ */
+int env_set_force(const char *varname, const char *value);
+
+/**
  * env_get_ulong() - Return an environment variable as an integer value
  *
  * Most U-Boot environment variables store hex values. For those which store
