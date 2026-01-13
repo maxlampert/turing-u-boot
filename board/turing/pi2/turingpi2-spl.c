@@ -127,6 +127,7 @@ int tp_board_init(void) {
     result = board_info_from_eeprom(info);
 
   u32 crc = compute_crc(info);
+  printf("DEBUG: computed CRC=0x%08x, stored CRC=0x%08x\n", crc, info->crc32);
   if (result || crc != info->crc32) {
     printf("Error(%x): invalid board info, defaulting to version 0x%x. crc=%x "
            "expected=%x ver=%x\n",
