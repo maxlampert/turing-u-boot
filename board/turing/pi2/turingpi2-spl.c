@@ -89,7 +89,13 @@ u32 compute_crc(tpi_board_info *info) {
 
 #if CONFIG_IS_ENABLED(BLOBLIST)
 tpi_board_info *setup_bloblist(void) {
-  int init_res = bloblist_init();
+  /*
+   * Use bloblist_new() directly with the fixed address instead of
+   * bloblist_init(). This works around an issue where SPL doesn't
+   * pick up CONFIG_BLOBLIST_FIXED correctly (the code uses IS_ENABLED
+   * instead of CONFIG_IS_ENABLED, so SPL_BLOBLIST_FIXED is not checked).
+   */
+  int init_res = bloblist_new(CONFIG_BLOBLIST_ADDR, CONFIG_BLOBLIST_SIZE, 0, 0);
   if (init_res) {
     printf("bloblist init err 0x%x\n", init_res);
     return NULL;
